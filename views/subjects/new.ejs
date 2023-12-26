@@ -1,0 +1,29 @@
+<!-- views/subjects/new.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add New Subject</title>
+</head>
+
+<body>
+  <h1>Add New Subject</h1>
+  <form action="/subjects" method="post">
+    <label for="subject_name">Subject Name:</label>
+    <input type="text" id="subject_name" name="subject_name" required>
+
+    <label for="semester_id">Semester:</label>
+    <select id="semester_id" name="semester_id" required>
+      <% semesters.forEach(semester => { %>
+        <option value="<%= semester.id %>"><%= semester.name %></option>
+      <% }); %>
+    </select>
+
+    <button type="submit">Add Subject</button>
+  </form>
+</body>
+
+</html>

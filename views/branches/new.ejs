@@ -1,0 +1,29 @@
+<!-- views/branches/new.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add New Branch</title>
+</head>
+
+<body>
+  <h1>Add New Branch</h1>
+  <form action="/branches" method="post">
+    <label for="branch_name">Branch Name:</label>
+    <input type="text" id="branch_name" name="branch_name" required>
+
+    <label for="field_of_study_id">Field of Study:</label>
+    <select id="field_of_study_id" name="field_of_study_id" required>
+      <% fieldsOfStudy.forEach(fieldOfStudy => { %>
+        <option value="<%= fieldOfStudy.id %>"><%= fieldOfStudy.name %></option>
+      <% }); %>
+    </select>
+
+    <button type="submit">Add Branch</button>
+  </form>
+</body>
+
+</html>

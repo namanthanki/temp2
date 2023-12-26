@@ -1,0 +1,29 @@
+<!-- views/semesters/new.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add New Semester</title>
+</head>
+
+<body>
+  <h1>Add New Semester</h1>
+  <form action="/semesters" method="post">
+    <label for="semester_name">Semester Name:</label>
+    <input type="text" id="semester_name" name="semester_name" required>
+
+    <label for="branch_id">Branch:</label>
+    <select id="branch_id" name="branch_id" required>
+      <% branches.forEach(branch => { %>
+        <option value="<%= branch.id %>"><%= branch.name %></option>
+      <% }); %>
+    </select>
+
+    <button type="submit">Add Semester</button>
+  </form>
+</body>
+
+</html>

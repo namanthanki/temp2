@@ -1,0 +1,29 @@
+<!-- views/fieldsOfStudy/new.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add New Field of Study</title>
+</head>
+
+<body>
+  <h1>Add New Field of Study</h1>
+  <form action="/fieldsOfStudy" method="post">
+    <label for="field_name">Field of Study Name:</label>
+    <input type="text" id="field_name" name="field_name" required>
+
+    <label for="degree_id">Degree:</label>
+    <select id="degree_id" name="degree_id" required>
+      <% degrees.forEach(degree => { %>
+        <option value="<%= degree.id %>"><%= degree.name %></option>
+      <% }); %>
+    </select>
+
+    <button type="submit">Add Field of Study</button>
+  </form>
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+<!-- views/fieldsOfStudy/index.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fields of Study</title>
+</head>
+
+<body>
+  <h1>Fields of Study</h1>
+  <ul>
+    <% fieldsOfStudy.forEach(field => { %>
+      <li><%= field.name %></li>
+    <% }); %>
+  </ul>
+  <a href="/fieldsOfStudy/new">Add a new field of study</a>
+</body>
+
+</html>

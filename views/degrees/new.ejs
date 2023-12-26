@@ -1,0 +1,29 @@
+<!-- views/degrees/new.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add New Degree</title>
+</head>
+
+<body>
+  <h1>Add New Degree</h1>
+  <form action="/degrees" method="post">
+    <label for="degree_name">Degree Name:</label>
+    <input type="text" id="degree_name" name="degree_name" required>
+
+    <label for="university_id">University:</label>
+    <select id="university_id" name="university_id" required>
+      <% universities.forEach(university => { %>
+        <option value="<%= university.id %>"><%= university.name %></option>
+      <% }); %>
+    </select>
+
+    <button type="submit">Add Degree</button>
+  </form>
+</body>
+
+</html>

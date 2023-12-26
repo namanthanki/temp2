@@ -1,0 +1,26 @@
+<!-- views/pdfFiles/index.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Files</title>
+</head>
+
+<body>
+  <h1>PDF Files</h1>
+  <ul>
+    <% pdfFiles.forEach(pdfFile => { %>
+      <li>
+        <%= pdfFile.name %>
+        <!-- Add a link or button to trigger the download -->
+        <a href="/pdfFiles/<%= pdfFile.id %>/download" download>Download</a>
+      </li>
+    <% }); %>
+  </ul>
+  <a href="/pdfFiles/new">Add a new PDF file</a>
+</body>
+
+</html>
