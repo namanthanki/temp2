@@ -1,26 +1,97 @@
 <!-- views/pdfFiles/index.ejs -->
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PDF Files</title>
-</head>
+<h1>PDF Files</h1>
 
-<body>
-  <h1>PDF Files</h1>
-  <ul>
-    <% pdfFiles.forEach(pdfFile => { %>
-      <li>
-        <%= pdfFile.name %>
-        <!-- Add a link or button to trigger the download -->
-        <a href="/pdfFiles/<%= pdfFile.id %>/download" download>Download</a>
-      </li>
-    <% }); %>
-  </ul>
-  <a href="/pdfFiles/new">Add a new PDF file</a>
-</body>
+<!-- University Dropdown -->
+<label for="universityFilter">Select University:</label>
+<select id="universityFilter" onchange="updateSubjects()">
+  <option value="" disabled selected>Select University</option>
+  <% universities.forEach(university => { %>
+    <option value="<%= university.id %>"><%= university.name %></option>
+  <% }); %>
+</select>
 
-</html>
+<!-- Subject Dropdown -->
+<label for="subjectFilter">Select Subject:</label>
+<select id="subjectFilter">
+  <option value="" disabled selected>Select Subject</option>
+  <!-- Dynamically populated based on user's university selection -->
+</select>
+
+<!-- Button to Fetch and Display PDF Files -->
+<button onclick="fetchAndDisplayPDFs()">Fetch PDF Files</button>
+
+<!-- Display PDF Files List -->
+<ul id="pdfList">
+  <!-- PDF files will be dynamically populated based on user's selections -->
+</ul>
+
+<script>
+  function updateSubjects() {
+    const universityId = document.getElementById('universityFilter').value;
+    const subjectDropdown = document.getElementById('subjectFilter');
+
+    // Fetch subjects based on the selected university
+    fetch(`/subjects/by-uni?universityId=${universityId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        } 
+        return response.json();
+      })
+      .then(subjects => {
+        // Clear existing options
+        subjectDropdown.innerHTML = '<option value="" disabled selected>Select Subject</option>';
+
+        // Populate the subject dropdown with fetched subjects
+        subjects.forEach(subject => {
+          const option = document.createElement('option');
+          option.value = subject.id;
+          option.textContent = subject.name;
+          subjectDropdown.appendChild(option);
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching subjects:', error);
+        // Handle the error appropriately, e.g., display a message to the user
+      });
+  }
+
+
+  function fetchAndDisplayPDFs() {
+    const universityId = document.getElementById('universityFilter').value;
+    const subjectId = document.getElementById('subjectFilter').value;
+
+    // Fetch PDF files based on user's selections
+    fetch(`/pdfFiles/pdf-files?universityId=${universityId}&subjectId=${subjectId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(pdfFiles => {
+        console.log('Fetched PDF files:', pdfFiles);
+        const pdfList = document.getElementById('pdfList');
+        pdfList.innerHTML = ''; // Clear existing list
+
+        pdfFiles.forEach(pdfFile => {
+          // const listItem = document.createElement('li');
+          // listItem.textContent = pdfFile.name;
+          // pdfList.appendChild(listItem);
+          const listItem = document.createElement('li');
+          // Create a clickable link for each PDF file
+          const downloadLink = document.createElement('a');
+          downloadLink.href = `/pdfFiles/${pdfFile.id}/download`;
+          downloadLink.textContent = pdfFile.name;
+          downloadLink.download = pdfFile.name;
+          listItem.appendChild(downloadLink);
+          pdfList.appendChild(listItem);
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching PDF files:', error);
+        // Handle the error appropriately, e.g., display a message to the user
+      });
+  }
+</script>

@@ -1,6 +1,7 @@
 // controllers/pdfFilesController.js
 const PDFFile = require('../models/PDFFiles');
 const Subject = require('../models/Subject');
+const University = require('../models/University');
 
 const multer = require('multer');
 const path = require('path');
@@ -20,6 +21,16 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const pdfFilesController = {
+  getAllAdmin: (req, res) => {
+    PDFFile.getAll((err, pdfFiles) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('Database error');
+        return;
+      }
+      res.render('pdfFiles/admin-index', { pdfFiles });
+    });
+  },
   getAll: (req, res) => {
     PDFFile.getAll((err, pdfFiles) => {
       if (err) {
@@ -27,7 +38,17 @@ const pdfFilesController = {
         res.status(500).send('Database error');
         return;
       }
-      res.render('pdfFiles/index', { pdfFiles });
+
+      // Assuming you have a function to fetch universities, adjust as needed
+      University.getAll((err, universities) => {
+        if (err) {
+          console.error('Error fetching universities:', err);
+          res.status(500).json({ error: 'Internal Server Error' });
+          return;
+        }
+
+        res.render('pdfFiles/index', { universities, pdfFiles });
+      });
     });
   },
 
@@ -68,7 +89,7 @@ const pdfFilesController = {
           res.status(500).send('Database error');
           return;
         }
-        res.redirect('/pdfFiles');
+        res.redirect('/pdfFiles/pdf-admin');
       });
     },
   ],
@@ -184,6 +205,25 @@ const pdfFilesController = {
       });
     });
   },
+
+  getFilesForForUser: (req, res) => {
+    try {
+      const { universityId, subjectId } = req.query;
+      console.log(universityId, subjectId);
+      PDFFile.getFilteredFiles(universityId, subjectId, (err, pdfFiles) => {
+        if (err) {
+          console.error('Error fetching PDF files from MySQL:', err);
+          res.status(500).json({ error: 'Internal Server Error' });
+          return;
+        }
+        res.setHeader('Content-Type', 'application/json');
+        res.json(pdfFiles);
+      });
+    } catch (error) {
+      console.error('Error in /pdf-files route:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }
 };
 
 module.exports = pdfFilesController;

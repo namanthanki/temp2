@@ -42,6 +42,19 @@ const subjectsController = {
       res.redirect('/subjects');
     });
   },
+
+  getSubjectsByUniversity: (req, res) => {
+    const { universityId } = req.query;
+    Subject.getSubjectsByUniversity(universityId, (err, subjects) => {
+      if (err) {
+        console.error('Error fetching subjects by university:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+      res.setHeader('Content-Type', 'application/json');
+      res.json(subjects);
+    });
+  },
 };
 
 module.exports = subjectsController;
