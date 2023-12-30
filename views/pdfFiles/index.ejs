@@ -4,18 +4,41 @@
 
 <!-- University Dropdown -->
 <label for="universityFilter">Select University:</label>
-<select id="universityFilter" onchange="updateSubjects()">
+<select id="universityFilter" onchange="updateDegrees()">
   <option value="" disabled selected>Select University</option>
   <% universities.forEach(university => { %>
     <option value="<%= university.id %>"><%= university.name %></option>
   <% }); %>
 </select>
 
-<!-- Subject Dropdown -->
-<label for="subjectFilter">Select Subject:</label>
-<select id="subjectFilter">
-  <option value="" disabled selected>Select Subject</option>
+<label for="degreeFilter">Select Degree:</label>
+<select id="degreeFilter" onchange="updateFields()">
+  <option value="" disabled selected>Select Degree</option>
   <!-- Dynamically populated based on user's university selection -->
+</select>
+
+<label for="fieldFilter">Select Field of Study:</label>
+<select id="fieldFilter" onchange="updateBranches()">
+  <option value="" disabled selected>Select Field of Study</option>
+  <!-- Dynamically populated based on user's degree selection -->
+</select>
+
+<label for="branchFilter">Select Branch:</label>
+<select id="branchFilter" onchange="updateSemesters()">
+  <option value="" disabled selected>Select Branch</option>
+  <!-- Dynamically populated based on user's field of study selection -->
+</select>
+
+<label for="semesterFilter">Select Semester:</label>
+<select id="semesterFilter" onchange="updateSubjects()">
+  <option value="" disabled selected>Select Semester</option>
+  <!-- Dynamically populated based on user's branch selection -->
+</select>
+
+<label for="subjectsFilter">Select Subjects:</label>
+<select id="subjectsFilter">
+  <option value="" disabled selected>Select Subjects</option>
+  <!-- Dynamically populated based on user's semester selection -->
 </select>
 
 <!-- Button to Fetch and Display PDF Files -->
@@ -27,71 +50,218 @@
 </ul>
 
 <script>
-  function updateSubjects() {
+  function updateDegrees() {
     const universityId = document.getElementById('universityFilter').value;
-    const subjectDropdown = document.getElementById('subjectFilter');
+    const degreeDropdown = document.getElementById('degreeFilter');
 
-    // Fetch subjects based on the selected university
-    fetch(`/subjects/by-uni?universityId=${universityId}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        } 
-        return response.json();
+    // Fetch degrees based on the selected university
+    fetch(`/degrees/by-uni?universityId=${universityId}`)
+      .then(response => response.json())
+      .then(degrees => {
+        // Clear existing options
+        degreeDropdown.innerHTML = '<option value="" disabled selected>Select Degree</option>';
+
+        // Populate the degree dropdown with fetched degrees
+        degrees.forEach(degree => {
+          const option = document.createElement('option');
+          option.value = degree.id;
+          option.textContent = degree.name;
+          degreeDropdown.appendChild(option);
+        });
       })
+      .catch(error => console.error('Error fetching degrees:', error));
+  }
+
+  function updateFields() {
+    const degreeId = document.getElementById('degreeFilter').value;
+    const fieldDropdown = document.getElementById('fieldFilter');
+
+    // Fetch fields of study based on the selected degree
+    fetch(`/fieldsOfStudy/by-degree?degreeId=${degreeId}`)
+      .then(response => response.json())
+      .then(fields => {
+        // Clear existing options
+        fieldDropdown.innerHTML = '<option value="" disabled selected>Select Field of Study</option>';
+
+        // Populate the field of study dropdown with fetched fields
+        fields.forEach(field => {
+          const option = document.createElement('option');
+          option.value = field.id;
+          option.textContent = field.name;
+          fieldDropdown.appendChild(option);
+        });
+      })
+      .catch(error => console.error('Error fetching fields of study:', error));
+  }
+
+  function updateBranches() {
+    const fieldId = document.getElementById('fieldFilter').value;
+    const branchDropdown = document.getElementById('branchFilter');
+
+    // Fetch branches based on the selected field of study
+    fetch(`/branches/by-field?fieldId=${fieldId}`)
+      .then(response => response.json())
+      .then(branches => {
+        // Clear existing options
+        branchDropdown.innerHTML = '<option value="" disabled selected>Select Branch</option>';
+
+        // Populate the branch dropdown with fetched branches
+        branches.forEach(branch => {
+          const option = document.createElement('option');
+          option.value = branch.id;
+          option.textContent = branch.name;
+          branchDropdown.appendChild(option);
+        });
+      })
+      .catch(error => console.error('Error fetching branches:', error));
+  }
+
+  function updateSemesters() {
+    const branchId = document.getElementById('branchFilter').value;
+    const semesterDropdown = document.getElementById('semesterFilter');
+
+    // Fetch semesters based on the selected branch
+    fetch(`/semesters/by-branch?branchId=${branchId}`)
+      .then(response => response.json())
+      .then(semesters => {
+        // Clear existing options
+        semesterDropdown.innerHTML = '<option value="" disabled selected>Select Semester</option>';
+
+        // Populate the semester dropdown with fetched semesters
+        semesters.forEach(semester => {
+          const option = document.createElement('option');
+          option.value = semester.id;
+          option.textContent = semester.name;
+          semesterDropdown.appendChild(option);
+        });
+      })
+      .catch(error => console.error('Error fetching semesters:', error));
+  }
+
+  // function updateSubjects() {
+  //   const universityId = document.getElementById('universityFilter').value;
+  //   const subjectDropdown = document.getElementById('subjectFilter');
+
+  //   // Fetch subjects based on the selected university
+  //   fetch(`/subjects/by-uni?universityId=${universityId}`)
+  //     .then(response => {
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! Status: ${response.status}`);
+  //       } 
+  //       return response.json();
+  //     })
+  //     .then(subjects => {
+  //       // Clear existing options
+  //       subjectDropdown.innerHTML = '<option value="" disabled selected>Select Subject</option>';
+
+  //       // Populate the subject dropdown with fetched subjects
+  //       subjects.forEach(subject => {
+  //         const option = document.createElement('option');
+  //         option.value = subject.id;
+  //         option.textContent = subject.name;
+  //         subjectDropdown.appendChild(option);
+  //       });
+  //     })
+  //     .catch(error => {
+  //       console.error('Error fetching subjects:', error);
+  //       // Handle the error appropriately, e.g., display a message to the user
+  //     });
+  // }
+
+  function updateSubjects() {
+    const semesterId = document.getElementById('semesterFilter').value;
+    const subjectsDropdown = document.getElementById('subjectsFilter');
+
+    // Fetch subjects based on the selected semester
+    fetch(`/subjects/by-sem?semesterId=${semesterId}`)
+      .then(response => response.json())
       .then(subjects => {
         // Clear existing options
-        subjectDropdown.innerHTML = '<option value="" disabled selected>Select Subject</option>';
+        subjectsDropdown.innerHTML = '<option value="" disabled selected>Select Subjects</option>';
 
-        // Populate the subject dropdown with fetched subjects
+        // Populate the subjects dropdown with fetched subjects
         subjects.forEach(subject => {
           const option = document.createElement('option');
           option.value = subject.id;
           option.textContent = subject.name;
-          subjectDropdown.appendChild(option);
+          subjectsDropdown.appendChild(option);
         });
       })
-      .catch(error => {
-        console.error('Error fetching subjects:', error);
-        // Handle the error appropriately, e.g., display a message to the user
-      });
+      .catch(error => console.error('Error fetching subjects:', error));
   }
 
 
+  // function fetchAndDisplayPDFs() {
+  //   const universityId = document.getElementById('universityFilter').value;
+  //   const subjectId = document.getElementById('subjectFilter').value;
+
+  //   // Fetch PDF files based on user's selections
+  //   fetch(`/pdfFiles/pdf-files?universityId=${universityId}&subjectId=${subjectId}`)
+  //     .then(response => {
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! Status: ${response.status}`);
+  //       }
+  //       return response.json();
+  //     })
+  //     .then(pdfFiles => {
+  //       console.log('Fetched PDF files:', pdfFiles);
+  //       const pdfList = document.getElementById('pdfList');
+  //       pdfList.innerHTML = ''; // Clear existing list
+
+  //       pdfFiles.forEach(pdfFile => {
+  //         // const listItem = document.createElement('li');
+  //         // listItem.textContent = pdfFile.name;
+  //         // pdfList.appendChild(listItem);
+  //         const listItem = document.createElement('li');
+  //         // Create a clickable link for each PDF file
+  //         const downloadLink = document.createElement('a');
+  //         downloadLink.href = `/pdfFiles/${pdfFile.id}/download`;
+  //         downloadLink.textContent = pdfFile.name;
+  //         downloadLink.download = pdfFile.name;
+  //         listItem.appendChild(downloadLink);
+  //         pdfList.appendChild(listItem);
+  //       });
+  //     })
+  //     .catch(error => {
+  //       console.error('Error fetching PDF files:', error);
+  //       // Handle the error appropriately, e.g., display a message to the user
+  //     });
+  // }
   function fetchAndDisplayPDFs() {
     const universityId = document.getElementById('universityFilter').value;
-    const subjectId = document.getElementById('subjectFilter').value;
+    const degreeId = document.getElementById('degreeFilter').value;
+    const fieldId = document.getElementById('fieldFilter').value;
+    const branchId = document.getElementById('branchFilter').value;
+    const semesterId = document.getElementById('semesterFilter').value;
+    const subjectId = document.getElementById('subjectsFilter').value;
+
+    // Validate that all required dropdowns are selected
+    if (!universityId || !degreeId || !fieldId || !branchId || !semesterId || !subjectId) {
+      console.error('Please select all dropdown values.');
+      return;
+    }
 
     // Fetch PDF files based on user's selections
-    fetch(`/pdfFiles/pdf-files?universityId=${universityId}&subjectId=${subjectId}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
+    fetch(`/pdfFiles/filter?universityId=${universityId}&degreeId=${degreeId}&fieldId=${fieldId}&branchId=${branchId}&semesterId=${semesterId}&subjectId=${subjectId}`)
+      .then(response => response.json())
       .then(pdfFiles => {
-        console.log('Fetched PDF files:', pdfFiles);
         const pdfList = document.getElementById('pdfList');
         pdfList.innerHTML = ''; // Clear existing list
 
         pdfFiles.forEach(pdfFile => {
-          // const listItem = document.createElement('li');
-          // listItem.textContent = pdfFile.name;
-          // pdfList.appendChild(listItem);
           const listItem = document.createElement('li');
-          // Create a clickable link for each PDF file
+          listItem.textContent = pdfFile.name;
+
+          // Add a link or button to trigger the download
           const downloadLink = document.createElement('a');
           downloadLink.href = `/pdfFiles/${pdfFile.id}/download`;
-          downloadLink.textContent = pdfFile.name;
-          downloadLink.download = pdfFile.name;
+          downloadLink.textContent = 'Download';
+          downloadLink.download = `${pdfFile.name}.pdf`;
+
           listItem.appendChild(downloadLink);
           pdfList.appendChild(listItem);
         });
       })
-      .catch(error => {
-        console.error('Error fetching PDF files:', error);
-        // Handle the error appropriately, e.g., display a message to the user
-      });
-  }
+      .catch(error => console.error('Error fetching PDF files:', error));
+}
 </script>

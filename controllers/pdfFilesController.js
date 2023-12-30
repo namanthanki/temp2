@@ -31,6 +31,7 @@ const pdfFilesController = {
       res.render('pdfFiles/admin-index', { pdfFiles });
     });
   },
+
   getAll: (req, res) => {
     PDFFile.getAll((err, pdfFiles) => {
       if (err) {
@@ -50,6 +51,26 @@ const pdfFilesController = {
         res.render('pdfFiles/index', { universities, pdfFiles });
       });
     });
+  },
+
+  getFilteredFiles: (req, res) => {
+    try {
+      const { universityId, degreeId, fieldId, branchId, semesterId, subjectId } = req.query;
+
+      PDFFile.getFilteredFiles(universityId, degreeId, fieldId, branchId, semesterId, subjectId, (err, pdfFiles) => {
+        if (err) {
+          console.error('Error fetching PDF files from MySQL:', err);
+          res.status(500).json({ error: 'Internal Server Error' });
+          return;
+        }
+
+        res.setHeader('Content-Type', 'application/json');
+        res.json(pdfFiles);
+      });
+    } catch (error) {
+      console.error('Error in /pdf-files route:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   },
 
   showForm: (req, res) => {

@@ -14,6 +14,20 @@ const degreesController = {
     });
   },
 
+  getDegreesByUniversity: (req, res) => {
+    const { universityId } = req.query;
+
+    Degree.getDegreesByUniversity(universityId, (err, degrees) => {
+      if (err) {
+        console.error('Error fetching degrees:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+      res.setHeader('Content-Type', 'application/json');
+      res.json(degrees);
+    });
+  },
+
   showForm: (req, res) => {
     University.getAllUniversities((err, universities) => {
       if (err) {

@@ -14,6 +14,20 @@ const fieldsOfStudyController = {
     });
   },
 
+  getFieldsByDegree: (req, res) => {
+    const { degreeId } = req.query;
+
+    FieldOfStudy.getFieldsByDegree(degreeId, (err, fields) => {
+      if (err) {
+        console.error('Error fetching fields:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+
+      res.json(fields);
+    });
+  },
+
   showForm: (req, res) => {
     Degree.getAllDegrees((err, degrees) => {
       if (err) {

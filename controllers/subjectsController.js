@@ -14,6 +14,20 @@ const subjectsController = {
     });
   },
 
+  getSubjectsBySemester: (req, res) => {
+    const { semesterId } = req.query;
+
+    Subject.getSubjectsBySemester(semesterId, (err, subjects) => {
+      if (err) {
+        console.error('Error fetching subjects:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+
+      res.json(subjects);
+    });
+  },
+
   showForm: (req, res) => {
     Semester.getAllSemesters((err, semesters) => {
       if (err) {

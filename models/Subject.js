@@ -24,6 +24,10 @@ const Subject = {
 
     db.query(query, [universityId], callback);
   },
+  getSubjectsBySemester: (semesterId, callback) => {
+    const query = 'SELECT id, name FROM subjects WHERE semester_id = ?';
+    db.query(query, [semesterId], callback);
+  },
 };
 
 module.exports = Subject;

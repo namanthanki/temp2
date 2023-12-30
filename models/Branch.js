@@ -11,6 +11,10 @@ const Branch = {
   getAllBranches: (callback) => {
     db.query('SELECT id, name FROM branches', callback);
   },
+  getBranchesByField: (fieldId, callback) => {
+    const query = 'SELECT id, name FROM branches WHERE field_id = ?';
+    db.query(query, [fieldId], callback);
+  },
 };
 
 module.exports = Branch;

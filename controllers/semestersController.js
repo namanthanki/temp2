@@ -14,6 +14,20 @@ const semestersController = {
     });
   },
 
+  getSemestersByBranch: (req, res) => {
+    const { branchId } = req.query;
+
+    Semester.getSemestersByBranch(branchId, (err, semesters) => {
+      if (err) {
+        console.error('Error fetching semesters:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+
+      res.json(semesters);
+    });
+  },
+
   showForm: (req, res) => {
     Branch.getAllBranches((err, branches) => {
       if (err) {

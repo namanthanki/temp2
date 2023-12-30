@@ -14,6 +14,20 @@ const branchesController = {
     });
   },
 
+  getBranchesByField: (req, res) => {
+    const { fieldId } = req.query;
+
+    Branch.getBranchesByField(fieldId, (err, branches) => {
+      if (err) {
+        console.error('Error fetching branches:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+
+      res.json(branches);
+    });
+  },
+
   showForm: (req, res) => {
     FieldOfStudy.getAllFieldsOfStudy((err, fieldsOfStudy) => {
       if (err) {

@@ -17,7 +17,21 @@ const PDFFile = {
   remove: (id, callback) => {
     db.query('DELETE FROM pdf_files WHERE id = ?', [id], callback);
   },
-  getFilteredFiles: (universityId, subjectId, callback) => {
+  // getFilteredFiles: (universityId, subjectId, callback) => {
+  //   const query = `
+  //     SELECT pdf.id, pdf.name, pdf.file_name, pdf.file_path
+  //     FROM pdf_files pdf
+  //     JOIN subjects subject ON pdf.subject_id = subject.id
+  //     JOIN semesters semester ON subject.semester_id = semester.id
+  //     JOIN branches branch ON semester.branch_id = branch.id
+  //     JOIN fields_of_study field ON branch.field_id = field.id
+  //     JOIN degrees degree ON field.degree_id = degree.id
+  //     WHERE degree.university_id = ? AND subject.id = ?;
+  //   `;
+
+  //   db.query(query, [universityId, subjectId], callback);
+  // },
+  getFilteredFiles: (universityId, degreeId, fieldId, branchId, semesterId, subjectId, callback) => {
     const query = `
       SELECT pdf.id, pdf.name, pdf.file_name, pdf.file_path
       FROM pdf_files pdf
@@ -26,10 +40,15 @@ const PDFFile = {
       JOIN branches branch ON semester.branch_id = branch.id
       JOIN fields_of_study field ON branch.field_id = field.id
       JOIN degrees degree ON field.degree_id = degree.id
-      WHERE degree.university_id = ? AND subject.id = ?;
+      WHERE degree.university_id = ? 
+        AND degree.id = ? 
+        AND field.id = ? 
+        AND branch.id = ? 
+        AND semester.id = ? 
+        AND subject.id = ?;
     `;
 
-    db.query(query, [universityId, subjectId], callback);
+    db.query(query, [universityId, degreeId, fieldId, branchId, semesterId, subjectId], callback);
   },
 };
 

@@ -13,5 +13,6 @@ pdfFilesRouter.post('/:id', pdfFilesController.update);
 pdfFilesRouter.post('/:id/delete', pdfFilesController.remove);
 pdfFilesRouter.get('/:id/download', pdfFilesController.download);
 pdfFilesRouter.get('/pdf-files', pdfFilesController.getFilesForForUser);
+pdfFilesRouter.get('/filter', pdfFilesController.getFilteredFiles);
 
 module.exports = pdfFilesRouter;

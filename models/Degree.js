@@ -11,6 +11,10 @@ const Degree = {
   getAllDegrees: (callback) => {
     db.query('SELECT id, name FROM degrees', callback);
   },
+  getDegreesByUniversity: (universityId, callback) => {
+    const query = 'SELECT id, name FROM degrees WHERE university_id = ?';
+    db.query(query, [universityId], callback);
+  },
 };
 
 module.exports = Degree;

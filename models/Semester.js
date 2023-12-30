@@ -11,6 +11,10 @@ const Semester = {
   getAllSemesters: (callback) => {
     db.query('SELECT id, name FROM semesters', callback);
   },
+  getSemestersByBranch: (branchId, callback) => {
+    const query = 'SELECT id, name FROM semesters WHERE branch_id = ?';
+    db.query(query, [branchId], callback);
+  },
 };
 
 module.exports = Semester;
